@@ -6,24 +6,29 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 19:16:36 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/05 19:52:07 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/05 22:25:47 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
 
-t_philo_queue	*init_queue(void)
+t_philo_queue	*init_queue(t_args *args)
 {
 	t_philo_queue	*queue;
 
 	queue = malloc(sizeof(t_philo_queue));
 	if (!queue)
 		return (NULL);
+	queue->args = args;
+	queue->mutex = malloc(sizeof(pthread_mutex_t));
+	if (!queue->mutex)
+		return (free(queue), free(args), NULL);
+	pthread_mutex_init(queue->mutex, NULL);
 	queue->first = NULL;
 	return (queue);
 }
 
-void	add_in_queue(t_philo_queue *queue, t_args *args)
+void	add_in_queue(t_philo_queue *queue)
 {
 	t_philo		*new;
 	t_philo		*current;
@@ -32,8 +37,13 @@ void	add_in_queue(t_philo_queue *queue, t_args *args)
 	new = malloc(sizeof(t_philo));
 	if (!new)
 		return ;
-	new->args = args;
 	new->id = id++ + 1;
+	new->status = 0;
+	new->starting_time = 0;
+	new->last_action = 0;
+	new->thread = malloc(sizeof(pthread_t));
+	if (!new->thread)
+		(free_queue(queue));
 	new->next = NULL;
 	if (queue->first)
 	{
@@ -71,12 +81,14 @@ void	free_queue(t_philo_queue *queue)
 	while (current)
 	{
 		next = current->next;
-		if (current->args && current->id == 1)
-			free(current->args);
+		free(current->thread);
 		free(current);
 		current = next;
 	}
+	free(queue->args);
+	free(queue->mutex);
 	free(queue);
+	queue = NULL;
 }
 
 t_philo_queue	*create_philo_queue(t_args *args)
@@ -85,12 +97,12 @@ t_philo_queue	*create_philo_queue(t_args *args)
 	int				i;
 
 	i = 0;
-	queue = init_queue();
+	queue = init_queue(args);
 	if (!queue)
 		return (NULL);
 	while (i < args->nb_of_philo)
 	{
-		add_in_queue(queue, args);
+		add_in_queue(queue);
 		i++;
 	}
 	return (queue);
