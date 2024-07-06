@@ -48,7 +48,7 @@ int	fork_available(t_philo_queue *queue, t_philo *philo)
 	}
 	else
 	{
-		if (philo->id == 0)
+		if (philo->id == 1)
 		{
 			if (is_eating(queue, philo->id + 1) || is_eating(queue,
 					queue->args->nb_of_philo))
@@ -56,19 +56,33 @@ int	fork_available(t_philo_queue *queue, t_philo *philo)
 		}
 		else if (philo->id == queue->args->nb_of_philo)
 		{
-			if (is_eating(queue, 0) || is_eating(queue, philo->id - 1))
+			if (is_eating(queue, 1) || is_eating(queue, philo->id - 1))
 				return (0);
 		}
 	}
 	return (1);
 }
 
+t_philo	*get_by_id(t_philo_queue *queue, int id)
+{
+	t_philo	*philo;
+
+	philo = queue->first;
+	while (philo)
+	{
+		if (philo->id == id)
+			return (philo);
+		philo = philo->next;
+	}
+	return (NULL);
+}
+
 void	eat(t_philo_queue *queue, t_philo *philo)
 {
 	philo->starting_time = get_time(philo);
-	philo->last_eating = get_time(philo);
 	philo->status = 1;
 	usleep(queue->args->time_to_eat * 1000);
+	philo->last_eating = get_time(philo);
 	printf("%lld %d is eating\n", philo->starting_time, philo->id);
 }
 
@@ -82,18 +96,33 @@ void	p_sleep(t_philo_queue *queue, t_philo *philo)
 
 void	think(t_philo_queue *queue, t_philo *philo)
 {
-	int	i;
+	t_philo			*bef_philo;
+	t_philo			*next_philo;
+	long long int	time;
 
-	i = 0;
 	philo->starting_time = get_time(philo);
-	philo->status = 3;
-	if (philo->id > 0 && philo->id < queue->args->nb_of_philo)
+	if (philo->id == 1)
 	{
-		while (!fork_available(queue, philo))
-			i++;
+		bef_philo = get_by_id(queue, queue->args->nb_of_philo);
+		next_philo = get_by_id(queue, philo->id + 1);
 	}
-	else if (philo)
-		printf("%lld %d is thinking\n", philo->starting_time, philo->id);
+	else if (philo->id == queue->args->nb_of_philo)
+	{
+		bef_philo = get_by_id(queue, philo->id - 1);
+		next_philo = get_by_id(queue, 1);
+	}
+	else
+	{
+		bef_philo = get_by_id(queue, philo->id - 1);
+		next_philo = get_by_id(queue, philo->id + 1);
+	}
+	philo->status = 3;
+	time = get_time(philo);
+	if (bef_philo->status == 1)
+		usleep((time - bef_philo->starting_time) * 1000);
+	else if (next_philo->status == 1)
+		usleep((time - next_philo->starting_time) * 1000);
+	printf("%lld %d is thinking\n", philo->starting_time, philo->id);
 }
 
 int	is_sleeping(t_philo_queue *queue, int id)
@@ -126,20 +155,6 @@ int	died(t_philo_queue *queue)
 		philo = philo->next;
 	}
 	return (0);
-}
-
-t_philo	*get_by_id(t_philo_queue *queue, int id)
-{
-	t_philo	*philo;
-
-	philo = queue->first;
-	while (philo)
-	{
-		if (philo->id == id)
-			return (philo);
-		philo = philo->next;
-	}
-	return (NULL);
 }
 
 void	*routine(void *v_queue)

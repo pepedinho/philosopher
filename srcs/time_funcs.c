@@ -34,6 +34,8 @@ unsigned long long int	get_time(t_philo *philo)
 
 int	check_time(t_philo *philo, t_philo_queue *queue)
 {
+	unsigned long long int	time;
+
 	if (philo->status == 2)
 	{
 		if (get_time(philo)
@@ -54,11 +56,12 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 			return (printf("death time : %lld\n", get_time(philo)), 0);
 		}
 	}
-	if (get_time(philo)
+	time = get_time(philo);
+	if (time
 		- philo->last_eating > (unsigned long long)queue->args->time_to_die)
 	{
 		philo->status = 4;
-		return (printf("death time : %lld\n", get_time(philo)), 0);
+		return (0);
 	}
 	return (1);
 }
