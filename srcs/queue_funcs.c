@@ -20,10 +20,6 @@ t_philo_queue	*init_queue(t_args *args)
 	if (!queue)
 		return (NULL);
 	queue->args = args;
-	queue->mutex = malloc(sizeof(pthread_mutex_t));
-	if (!queue->mutex)
-		return (free(queue), free(args), NULL);
-	pthread_mutex_init(queue->mutex, NULL);
 	queue->first = NULL;
 	return (queue);
 }
@@ -41,9 +37,14 @@ void	add_in_queue(t_philo_queue *queue)
 	new->status = 0;
 	new->starting_time = 0;
 	new->last_action = 0;
+	new->last_eating = 0;
 	new->thread = malloc(sizeof(pthread_t));
 	if (!new->thread)
-		(free_queue(queue));
+		free_queue(queue);
+	new->mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(new->mutex, NULL);
+	if (!new->mutex)
+		free_queue(queue);
 	new->next = NULL;
 	if (queue->first)
 	{
@@ -81,12 +82,13 @@ void	free_queue(t_philo_queue *queue)
 	while (current)
 	{
 		next = current->next;
+		pthread_mutex_destroy(current->mutex);
+		free(current->mutex);
 		free(current->thread);
 		free(current);
 		current = next;
 	}
 	free(queue->args);
-	free(queue->mutex);
 	free(queue);
 	queue = NULL;
 }
@@ -103,6 +105,8 @@ t_philo_queue	*create_philo_queue(t_args *args)
 	while (i < args->nb_of_philo)
 	{
 		add_in_queue(queue);
+		if (!queue)
+			return (printf("Error during create queue\n"), NULL);
 		i++;
 	}
 	return (queue);

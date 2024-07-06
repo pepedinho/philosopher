@@ -32,17 +32,18 @@ typedef struct s_args
 typedef struct s_philo
 {
   pthread_t *thread;
+  pthread_mutex_t *mutex;
   int id;
   int status;
   int last_action;
   struct timeval geting_time;
   unsigned long long int starting_time;
+  unsigned long long int last_eating;
   struct s_philo *next;
 } t_philo;
 
 typedef struct s_philo_queue {
   t_args *args;
-  pthread_mutex_t *mutex;
   t_philo *first;
 } t_philo_queue;
 

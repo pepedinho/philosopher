@@ -28,5 +28,4 @@ void	thread_generation(t_philo_queue *queue)
 		pthread_join(*philo->thread, NULL);
 		philo = philo->next;
 	}
-	pthread_mutex_destroy(queue->mutex);
 }
