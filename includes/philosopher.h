@@ -33,6 +33,7 @@ typedef struct s_philo
 {
   pthread_t *thread;
   pthread_mutex_t *mutex;
+  pthread_mutex_t *print_mutex;
   int id;
   int status;
   int last_action;
@@ -44,6 +45,7 @@ typedef struct s_philo
 
 typedef struct s_philo_queue {
   t_args *args;
+  pthread_mutex_t *mutex_g;
   t_philo *first;
 } t_philo_queue;
 
@@ -58,6 +60,7 @@ void	free_queue(t_philo_queue *queue);
 //time functions
 unsigned long long int	get_time(t_philo *philo);
 int	check_time(t_philo *philo, t_philo_queue *queue);
+void	t_printf(t_philo *philo, char *str);
 
 //routine
 void*	routine(void *v_queue);

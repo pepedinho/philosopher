@@ -36,6 +36,7 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 {
 	unsigned long long int	time;
 
+	pthread_mutex_lock(philo->mutex);
 	if (philo->status == 2)
 	{
 		if (get_time(philo)
@@ -63,5 +64,13 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 		philo->status = 4;
 		return (0);
 	}
+	pthread_mutex_unlock(philo->mutex);
 	return (1);
+}
+
+void	t_printf(t_philo *philo, char *str)
+{
+	pthread_mutex_lock(philo->print_mutex);
+	printf("%lld %d %s\n", philo->starting_time, philo->id, str);
+	pthread_mutex_unlock(philo->print_mutex);
 }
