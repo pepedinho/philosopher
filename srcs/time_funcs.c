@@ -68,9 +68,11 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 	return (1);
 }
 
-void	t_printf(t_philo *philo, char *str)
+int	t_printf(t_philo *philo, char *str)
 {
-	pthread_mutex_lock(philo->print_mutex);
+	if (pthread_mutex_lock(philo->print_mutex) != 0)
+		return (printf("error lock mutex\n"), 0);
 	printf("%lld %d %s\n", philo->starting_time, philo->id, str);
 	pthread_mutex_unlock(philo->print_mutex);
+	return (1);
 }
