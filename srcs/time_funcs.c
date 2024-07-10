@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
+#include <pthread.h>
 #include <stdio.h>
 
 /*
@@ -70,9 +71,14 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 
 int	t_printf(t_philo *philo, char *str)
 {
+	long long int	time;
+	int				id;
+
 	if (pthread_mutex_lock(philo->print_mutex) != 0)
 		return (printf("error lock mutex\n"), 0);
-	printf("%lld %d %s\n", philo->starting_time, philo->id, str);
+	time = get_time(philo);
+	id = philo->id;
+	printf("%lld %d %s\n", time, id, str);
 	pthread_mutex_unlock(philo->print_mutex);
 	return (1);
 }

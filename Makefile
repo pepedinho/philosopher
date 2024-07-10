@@ -26,7 +26,7 @@ NAME = philosopher
 all : $(NAME)
 
 %.o : %.c
-	$(CC) $(CFLAGS) -I $(INCLUDES) -c  $< -o $@ 
+	$(CC) $(CFLAGS) -I $(INCLUDES) -c  $< -o $@ -pthread
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) -I $(INCLUDES)  $(OBJS) -o $(NAME)

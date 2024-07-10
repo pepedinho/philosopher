@@ -45,8 +45,8 @@ void	*routine(void *v_queue)
 
 	queue = v_queue;
 	philo = get_by_id(queue, &id);
-	if (!philo)
-		return (printf("error %d\n", id), NULL);
+	pthread_mutex_lock(philo->mutex);
 	t_printf(philo, "test");
+	pthread_mutex_unlock(philo->mutex);
 	return (NULL);
 }

@@ -46,7 +46,7 @@ int	main(int argc, const char *argv[])
 	queue = create_philo_queue(args);
 	if (!queue)
 		return (printf("error\n"), -1);
-	display_queue(queue);
+	// display_queue(queue);
 	thread_generation(queue);
 	free_queue(queue);
 	return (EXIT_SUCCESS);
