@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 21:07:54 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/05 21:14:20 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/11 01:06:47 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,12 @@ unsigned long long int	get_time(t_philo *philo)
 {
 	unsigned long long int	time;
 
+	pthread_mutex_lock(philo->time_mutex);
 	if (gettimeofday(&philo->geting_time, NULL) == -1)
-		return (0);
+		return (pthread_mutex_unlock(philo->time_mutex), 0);
 	time = (philo->geting_time.tv_sec * 1000) + (philo->geting_time.tv_usec
 			/ 1000);
+	pthread_mutex_unlock(philo->time_mutex);
 	return (time);
 }
 
@@ -74,11 +76,14 @@ int	t_printf(t_philo *philo, char *str)
 	long long int	time;
 	int				id;
 
-	if (pthread_mutex_lock(philo->print_mutex) != 0)
-		return (printf("error lock mutex\n"), 0);
 	time = get_time(philo);
+	if (time == 0)
+		return (-1);
+	pthread_mutex_lock(philo->id_mutex);
+	pthread_mutex_lock(philo->print_mutex);
 	id = philo->id;
 	printf("%lld %d %s\n", time, id, str);
+	pthread_mutex_unlock(philo->id_mutex);
 	pthread_mutex_unlock(philo->print_mutex);
 	return (1);
 }

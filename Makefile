@@ -6,14 +6,14 @@
 #    By: itahri <itahri@contact.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/25 13:12:50 by itahri            #+#    #+#              #
-#    Updated: 2024/07/05 22:09:52 by itahri           ###   ########.fr        #
+#    Updated: 2024/07/11 01:21:08 by itahri           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
-CC = cc
+CC = gcc
 
-SRCS = $(addprefix srcs/,  main.c args_parsing.c queue_funcs.c routine.c threads_funcs.c time_funcs.c)
+SRCS = $(addprefix srcs/,  main.c args_parsing.c queue_funcs.c routine.c threads_funcs.c time_funcs.c actions.c)
 
 INCLUDES = ./includes -I ./libft/includes/
 

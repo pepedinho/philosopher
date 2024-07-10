@@ -6,11 +6,12 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 19:16:36 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/05 22:25:47 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/10 23:44:42 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
+#include <pthread.h>
 
 t_philo_queue	*init_queue(t_args *args)
 {
@@ -26,6 +27,33 @@ t_philo_queue	*init_queue(t_args *args)
 	return (queue);
 }
 
+void	init_mutex(t_philo *new, t_philo_queue *queue)
+{
+	new->mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(new->mutex, NULL);
+	if (!new->mutex)
+		free_queue(queue);
+	new->print_mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(new->print_mutex, NULL);
+	if (!new->print_mutex)
+		free_queue(queue);
+	new->fork_mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(new->fork_mutex, NULL);
+	if (!new->fork_mutex)
+		free_queue(queue);
+	new->status_mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(new->status_mutex, NULL);
+	if (!new->status_mutex)
+		free_queue(queue);
+	new->id_mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(new->id_mutex, NULL);
+	if (!new->id_mutex)
+		free_queue(queue);
+	new->time_mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(new->time_mutex, NULL);
+	if (!new->time_mutex)
+		free_queue(queue);
+}
 int	add_in_queue(t_philo_queue *queue)
 {
 	t_philo		*new;
@@ -43,14 +71,9 @@ int	add_in_queue(t_philo_queue *queue)
 	new->thread = malloc(sizeof(pthread_t));
 	if (!new->thread)
 		free_queue(queue);
-	new->mutex = malloc(sizeof(pthread_mutex_t));
-	pthread_mutex_init(new->mutex, NULL);
-	if (!new->mutex)
-		return (free_queue(queue), 0);
-	new->print_mutex = malloc(sizeof(pthread_mutex_t));
-	pthread_mutex_init(new->print_mutex, NULL);
-	if (!new->print_mutex)
-		return (free_queue(queue), 0);
+	init_mutex(new, queue);
+	if (!queue)
+		return (0);
 	new->next = NULL;
 	if (queue->first)
 	{
@@ -91,6 +114,10 @@ void	free_queue(t_philo_queue *queue)
 		next = current->next;
 		pthread_mutex_destroy(current->mutex);
 		pthread_mutex_destroy(current->print_mutex);
+		pthread_mutex_destroy(current->fork_mutex);
+		pthread_mutex_destroy(current->status_mutex);
+		pthread_mutex_destroy(current->id_mutex);
+		pthread_mutex_destroy(current->time_mutex);
 		free(current->mutex);
 		free(current->print_mutex);
 		free(current->thread);

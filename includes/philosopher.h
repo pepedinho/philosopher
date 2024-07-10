@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 18:29:30 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/05 22:05:10 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/11 00:57:07 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ typedef struct s_philo
 	pthread_mutex_t			*mutex;
 	pthread_mutex_t			*print_mutex;
 	pthread_mutex_t			*fork_mutex;
+	pthread_mutex_t			*id_mutex;
+	pthread_mutex_t			*status_mutex;
+	pthread_mutex_t			*time_mutex;
 	int						id;
 	int						status;
 	int						last_action;
@@ -69,5 +72,9 @@ void						*routine(void *v_queue);
 
 // thread functions
 void						thread_generation(t_philo_queue *queue);
+
+// actions
+int							eat(t_philo_queue *queue, t_philo *philo);
+int							get_id(t_philo *philo);
 
 #endif

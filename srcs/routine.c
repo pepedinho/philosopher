@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 20:05:23 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/05 22:42:19 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/11 01:09:15 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,19 @@ t_philo	*get_by_id(t_philo_queue *queue, int *id)
 
 	pthread_mutex_lock(queue->mutex_g);
 	philo = queue->first;
-	while (philo)
+	while (philo && *id <= queue->args->nb_of_philo)
 	{
-		pthread_mutex_lock(philo->mutex);
+		pthread_mutex_lock(philo->id_mutex);
 		if (!*id)
 			*id = 1;
 		if (philo->id == *id)
 		{
 			*id += 1;
+			pthread_mutex_unlock(philo->id_mutex);
 			pthread_mutex_unlock(queue->mutex_g);
-			return (pthread_mutex_unlock(philo->mutex), philo);
+			return (philo);
 		}
-		pthread_mutex_unlock(philo->mutex);
+		pthread_mutex_unlock(philo->id_mutex);
 		philo = philo->next;
 	}
 	pthread_mutex_unlock(queue->mutex_g);
@@ -48,5 +49,7 @@ void	*routine(void *v_queue)
 	pthread_mutex_lock(philo->mutex);
 	t_printf(philo, "test");
 	pthread_mutex_unlock(philo->mutex);
+	if (philo->id % 2)
+		eat(queue, philo);
 	return (NULL);
 }
