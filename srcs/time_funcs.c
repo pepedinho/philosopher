@@ -26,12 +26,12 @@ unsigned long long int	get_time(t_philo *philo)
 {
 	unsigned long long int	time;
 
-	pthread_mutex_lock(philo->time_mutex);
+	// pthread_mutex_lock(philo->time_mutex);
 	if (gettimeofday(&philo->geting_time, NULL) == -1)
 		return (pthread_mutex_unlock(philo->time_mutex), 0);
 	time = (philo->geting_time.tv_sec * 1000) + (philo->geting_time.tv_usec
 			/ 1000);
-	pthread_mutex_unlock(philo->time_mutex);
+	// pthread_mutex_unlock(philo->time_mutex);
 	return (time);
 }
 

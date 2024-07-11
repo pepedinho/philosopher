@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 22:08:30 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/11 01:15:44 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/11 02:54:19 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,13 @@ void	change_status(t_philo *philo, int new_status)
 	pthread_mutex_unlock(philo->status_mutex);
 }
 
+void	change_starting_time(t_philo *philo)
+{
+	pthread_mutex_lock(philo->time_mutex);
+	philo->starting_time = get_time(philo);
+	pthread_mutex_unlock(philo->time_mutex);
+}
+
 int	eat(t_philo_queue *queue, t_philo *philo)
 {
 	t_philo	*first_fork;
@@ -69,14 +76,48 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 		first_fork = philo;
 		second_fork = philo->next;
 	}
-	pthread_mutex_lock(queue->mutex_g);
+	// pthread_mutex_lock(queue->mutex_g);
 	pthread_mutex_lock(first_fork->fork_mutex);
 	pthread_mutex_lock(second_fork->fork_mutex);
 	change_status(philo, 1);
 	t_printf(philo, "is taking a fork");
-	thread_sleep(queue->args->time_to_eat);
 	t_printf(philo, "is eating");
-	pthread_mutex_unlock(queue->mutex_g);
+	thread_sleep(queue->args->time_to_eat);
+	// pthread_mutex_unlock(queue->mutex_g);
+	pthread_mutex_unlock(first_fork->fork_mutex);
+	pthread_mutex_unlock(second_fork->fork_mutex);
+	return (1);
+}
+
+int	p_sleep(t_philo_queue *queue, t_philo *philo)
+{
+	change_starting_time(philo);
+	change_status(philo, 2);
+	t_printf(philo, "is sleeping");
+	thread_sleep(queue->args->time_to_sleep);
+	return (1);
+}
+
+int	think(t_philo_queue *queue, t_philo *philo)
+{
+	t_philo	*first_fork;
+	t_philo	*second_fork;
+
+	if (philo->id == queue->args->nb_of_philo)
+	{
+		first_fork = queue->first;
+		second_fork = philo;
+	}
+	else
+	{
+		first_fork = philo;
+		second_fork = philo->next;
+	}
+	change_starting_time(philo);
+	change_status(philo, 3);
+	t_printf(philo, "is thinking");
+	pthread_mutex_lock(first_fork->fork_mutex);
+	pthread_mutex_lock(second_fork->fork_mutex);
 	pthread_mutex_unlock(first_fork->fork_mutex);
 	pthread_mutex_unlock(second_fork->fork_mutex);
 	return (1);

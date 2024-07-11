@@ -11,17 +11,20 @@
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
+#include <pthread.h>
 
 void	thread_generation(t_philo_queue *queue)
 {
 	t_philo	*philo;
 
 	philo = queue->first;
+	pthread_mutex_lock(philo->print_mutex);
 	while (philo)
 	{
 		pthread_create(philo->thread, NULL, &routine, queue);
 		philo = philo->next;
 	}
+	pthread_mutex_unlock(queue->first->print_mutex);
 	philo = queue->first;
 	while (philo)
 	{

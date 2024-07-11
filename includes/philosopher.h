@@ -75,6 +75,8 @@ void						thread_generation(t_philo_queue *queue);
 
 // actions
 int							eat(t_philo_queue *queue, t_philo *philo);
+int							think(t_philo_queue *queue, t_philo *philo);
+int							p_sleep(t_philo_queue *queue, t_philo *philo);
 int							get_id(t_philo *philo);
 
 #endif

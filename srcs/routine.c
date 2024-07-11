@@ -43,13 +43,22 @@ void	*routine(void *v_queue)
 	t_philo_queue	*queue;
 	t_philo			*philo;
 	static int		id;
+	int				i;
 
 	queue = v_queue;
 	philo = get_by_id(queue, &id);
-	pthread_mutex_lock(philo->mutex);
+	pthread_mutex_lock(philo->print_mutex);
+	pthread_mutex_unlock(philo->print_mutex);
+	// pthread_mutex_lock(philo->mutex);
 	t_printf(philo, "test");
-	pthread_mutex_unlock(philo->mutex);
-	if (philo->id % 2)
+	// pthread_mutex_unlock(philo->mutex);
+	i = 0;
+	while (i < 10)
+	{
+		think(queue, philo);
 		eat(queue, philo);
+		p_sleep(queue, philo);
+		i++;
+	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 19:16:36 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/10 23:44:42 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/11 02:40:57 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,24 @@ t_philo_queue	*init_queue(t_args *args)
 
 void	init_mutex(t_philo *new, t_philo_queue *queue)
 {
+	static int		i;
+	pthread_mutex_t	*p_mutex;
+
+	i++;
+	if (i == 1)
+	{
+		printf("new print mutex\n");
+		p_mutex = malloc(sizeof(pthread_mutex_t));
+		pthread_mutex_init(p_mutex, NULL);
+		if (!p_mutex)
+			free_queue(queue);
+		new->print_mutex = p_mutex;
+	}
+	else
+		new->print_mutex = queue->first->print_mutex;
 	new->mutex = malloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init(new->mutex, NULL);
 	if (!new->mutex)
-		free_queue(queue);
-	new->print_mutex = malloc(sizeof(pthread_mutex_t));
-	pthread_mutex_init(new->print_mutex, NULL);
-	if (!new->print_mutex)
 		free_queue(queue);
 	new->fork_mutex = malloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init(new->fork_mutex, NULL);
@@ -54,6 +65,7 @@ void	init_mutex(t_philo *new, t_philo_queue *queue)
 	if (!new->time_mutex)
 		free_queue(queue);
 }
+
 int	add_in_queue(t_philo_queue *queue)
 {
 	t_philo		*new;
@@ -111,15 +123,18 @@ void	free_queue(t_philo_queue *queue)
 	current = queue->first;
 	while (current)
 	{
+		if (current->id == 1)
+		{
+			pthread_mutex_destroy(current->print_mutex);
+			free(current->print_mutex);
+		}
 		next = current->next;
 		pthread_mutex_destroy(current->mutex);
-		pthread_mutex_destroy(current->print_mutex);
 		pthread_mutex_destroy(current->fork_mutex);
 		pthread_mutex_destroy(current->status_mutex);
 		pthread_mutex_destroy(current->id_mutex);
 		pthread_mutex_destroy(current->time_mutex);
 		free(current->mutex);
-		free(current->print_mutex);
 		free(current->thread);
 		free(current);
 		current = next;
