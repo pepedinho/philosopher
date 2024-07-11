@@ -61,6 +61,13 @@ void	change_starting_time(t_philo *philo)
 	pthread_mutex_unlock(philo->time_mutex);
 }
 
+void	change_last_eating(t_philo *philo)
+{
+	pthread_mutex_lock(philo->time_mutex);
+	philo->last_eating = get_time(philo);
+	pthread_mutex_unlock(philo->time_mutex);
+}
+
 int	eat(t_philo_queue *queue, t_philo *philo)
 {
 	t_philo	*first_fork;
@@ -82,7 +89,9 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	change_status(philo, 1);
 	t_printf(philo, "is taking a fork");
 	t_printf(philo, "is eating");
+	change_starting_time(philo);
 	thread_sleep(queue->args->time_to_eat);
+	change_last_eating(philo);
 	// pthread_mutex_unlock(queue->mutex_g);
 	pthread_mutex_unlock(first_fork->fork_mutex);
 	pthread_mutex_unlock(second_fork->fork_mutex);

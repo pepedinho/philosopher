@@ -136,10 +136,15 @@ void	free_queue(t_philo_queue *queue)
 		pthread_mutex_destroy(current->time_mutex);
 		free(current->mutex);
 		free(current->thread);
+		free(current->fork_mutex);
+		free(current->time_mutex);
+		free(current->id_mutex);
+		free(current->status_mutex);
 		free(current);
 		current = next;
 	}
 	pthread_mutex_destroy(queue->mutex_g);
+	free(queue->mutex_g);
 	free(queue->args);
 	free(queue);
 	queue = NULL;

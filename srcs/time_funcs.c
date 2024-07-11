@@ -39,7 +39,8 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 {
 	unsigned long long int	time;
 
-	pthread_mutex_lock(philo->mutex);
+	//	pthread_mutex_lock(queue->mutex_g);
+	pthread_mutex_lock(philo->time_mutex);
 	if (philo->status == 2)
 	{
 		if (get_time(philo)
@@ -47,7 +48,8 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 			* 1000)
 		{
 			philo->status = 4;
-			return (printf("death time : %lld\n", get_time(philo)), 0);
+			t_printf(philo, "is died");
+			return (pthread_mutex_unlock(philo->time_mutex), 0);
 		}
 	}
 	else if (philo->status == 1)
@@ -57,17 +59,20 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 			* 1000)
 		{
 			philo->status = 4;
-			return (printf("death time : %lld\n", get_time(philo)), 0);
+			t_printf(philo, "is died");
+			return (pthread_mutex_unlock(philo->time_mutex), 0);
 		}
 	}
 	time = get_time(philo);
-	if (time
-		- philo->last_eating > (unsigned long long)queue->args->time_to_die)
+	if (time - philo->last_eating > (unsigned long long)queue->args->time_to_die
+		&& philo->last_eating)
 	{
 		philo->status = 4;
-		return (0);
+		t_printf(philo, "is died");
+		return (pthread_mutex_unlock(philo->time_mutex), 0);
 	}
-	pthread_mutex_unlock(philo->mutex);
+	// pthread_mutex_unlock(queue->mutex_g);
+	pthread_mutex_unlock(philo->time_mutex);
 	return (1);
 }
 

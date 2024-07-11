@@ -56,6 +56,8 @@ void	*routine(void *v_queue)
 	while (i < 10)
 	{
 		think(queue, philo);
+		if (!check_time(philo, queue))
+			break ;
 		eat(queue, philo);
 		p_sleep(queue, philo);
 		i++;
