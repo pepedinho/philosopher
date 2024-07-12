@@ -78,5 +78,6 @@ int							eat(t_philo_queue *queue, t_philo *philo);
 int							think(t_philo_queue *queue, t_philo *philo);
 int							p_sleep(t_philo_queue *queue, t_philo *philo);
 int							get_id(t_philo *philo);
+void						change_status(t_philo *philo, int new_status);
 
 #endif

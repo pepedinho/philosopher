@@ -48,7 +48,7 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 			* 1000)
 		{
 			philo->status = 4;
-			t_printf(philo, "is died");
+			t_printf(philo, "is dead");
 			return (pthread_mutex_unlock(philo->time_mutex), 0);
 		}
 	}
@@ -59,7 +59,7 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 			* 1000)
 		{
 			philo->status = 4;
-			t_printf(philo, "is died");
+			t_printf(philo, "is dead");
 			return (pthread_mutex_unlock(philo->time_mutex), 0);
 		}
 	}
@@ -68,7 +68,7 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 		&& philo->last_eating)
 	{
 		philo->status = 4;
-		t_printf(philo, "is died");
+		t_printf(philo, "is dead");
 		return (pthread_mutex_unlock(philo->time_mutex), 0);
 	}
 	// pthread_mutex_unlock(queue->mutex_g);

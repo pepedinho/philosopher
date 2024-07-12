@@ -16,11 +16,13 @@
 int	thread_sleep(int time)
 {
 	int	i;
+	int	sleep_interval;
 
 	i = 0;
-	while (i < 1000)
+	sleep_interval = 400;
+	while (i < (time * 1000 / sleep_interval))
 	{
-		if (usleep(time) != 0)
+		if (usleep(sleep_interval) != 0)
 			return (0);
 		i++;
 	}
@@ -34,6 +36,8 @@ int	get_status(t_philo *philo)
 	pthread_mutex_lock(philo->status_mutex);
 	status = philo->status;
 	pthread_mutex_unlock(philo->status_mutex);
+	if (status == 4)
+		t_printf(philo, "is dead");
 	return (status);
 }
 
@@ -68,11 +72,33 @@ void	change_last_eating(t_philo *philo)
 	pthread_mutex_unlock(philo->time_mutex);
 }
 
+int	check_eat_time(t_philo *philo, t_philo_queue *queue)
+{
+	pthread_mutex_lock(philo->time_mutex);
+	if (philo->last_eating
+		- philo->starting_time > (long long unsigned)queue->args->time_to_eat)
+	{
+		printf("-------------------------------------------------------------\n");
+		printf("starting time : %lld ending_time : %lld\n",
+			philo->starting_time, philo->last_eating);
+		printf("\tending_time - starting_time = %lld\n", philo->last_eating
+			- philo->starting_time);
+		printf("\t\ttime to eat : %d\n", queue->args->time_to_eat);
+		printf("-------------------------------------------------------------\n");
+		pthread_mutex_unlock(philo->time_mutex);
+		return (change_status(philo, 4), 0);
+	}
+	pthread_mutex_unlock(philo->time_mutex);
+	return (1);
+}
+
 int	eat(t_philo_queue *queue, t_philo *philo)
 {
 	t_philo	*first_fork;
 	t_philo	*second_fork;
 
+	if (get_status(philo) == 4)
+		return (0);
 	if (philo->id == queue->args->nb_of_philo)
 	{
 		first_fork = queue->first;
@@ -83,7 +109,6 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 		first_fork = philo;
 		second_fork = philo->next;
 	}
-	// pthread_mutex_lock(queue->mutex_g);
 	pthread_mutex_lock(first_fork->fork_mutex);
 	pthread_mutex_lock(second_fork->fork_mutex);
 	change_status(philo, 1);
@@ -92,7 +117,12 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	change_starting_time(philo);
 	thread_sleep(queue->args->time_to_eat);
 	change_last_eating(philo);
-	// pthread_mutex_unlock(queue->mutex_g);
+	if (!check_eat_time(philo, queue))
+	{
+		pthread_mutex_unlock(first_fork->fork_mutex);
+		pthread_mutex_unlock(second_fork->fork_mutex);
+		return (0);
+	}
 	pthread_mutex_unlock(first_fork->fork_mutex);
 	pthread_mutex_unlock(second_fork->fork_mutex);
 	return (1);
@@ -100,6 +130,8 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 
 int	p_sleep(t_philo_queue *queue, t_philo *philo)
 {
+	if (get_status(philo) == 4)
+		return (0);
 	change_starting_time(philo);
 	change_status(philo, 2);
 	t_printf(philo, "is sleeping");
@@ -112,6 +144,8 @@ int	think(t_philo_queue *queue, t_philo *philo)
 	t_philo	*first_fork;
 	t_philo	*second_fork;
 
+	if (get_status(philo) == 4)
+		return (0);
 	if (philo->id == queue->args->nb_of_philo)
 	{
 		first_fork = queue->first;

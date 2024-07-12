@@ -44,23 +44,46 @@ void	*routine(void *v_queue)
 	t_philo			*philo;
 	static int		id;
 	int				i;
+	int				max_ite;
 
 	queue = v_queue;
 	philo = get_by_id(queue, &id);
+	max_ite = 0;
 	pthread_mutex_lock(philo->print_mutex);
 	pthread_mutex_unlock(philo->print_mutex);
-	// pthread_mutex_lock(philo->mutex);
-	t_printf(philo, "test");
-	// pthread_mutex_unlock(philo->mutex);
+	pthread_mutex_lock(queue->mutex_g);
+	max_ite = queue->args->itteration;
+	pthread_mutex_unlock(queue->mutex_g);
 	i = 0;
-	while (i < 10)
+	if (max_ite)
 	{
-		think(queue, philo);
-		if (!check_time(philo, queue))
-			break ;
-		eat(queue, philo);
-		p_sleep(queue, philo);
-		i++;
+		while (i < max_ite)
+		{
+			if (!think(queue, philo))
+				break ;
+			if (!check_time(philo, queue))
+				break ;
+			if (!eat(queue, philo))
+				break ;
+			if (!p_sleep(queue, philo))
+				break ;
+			i++;
+		}
+	}
+	else
+	{
+		while (1)
+		{
+			if (!think(queue, philo))
+				break ;
+			if (!check_time(philo, queue))
+				break ;
+			if (!eat(queue, philo))
+				break ;
+			if (!p_sleep(queue, philo))
+				break ;
+		}
+		t_printf(philo, "dead debug");
 	}
 	return (NULL);
 }

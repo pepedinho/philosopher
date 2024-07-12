@@ -26,6 +26,22 @@ void	thread_generation(t_philo_queue *queue)
 	}
 	pthread_mutex_unlock(queue->first->print_mutex);
 	philo = queue->first;
+	/*while (philo)
+	{
+		if (philo->status == 4)
+		{
+			pthread_mutex_lock(philo->print_mutex);
+			printf("dead\n");
+			philo = queue->first;
+			while (philo)
+			{
+				change_status(philo, 4);
+				philo = philo->next;
+			}
+			pthread_mutex_unlock(philo->print_mutex);
+		}
+		philo = philo->next;
+	}*/
 	while (philo)
 	{
 		pthread_join(*philo->thread, NULL);
