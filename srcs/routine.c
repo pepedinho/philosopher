@@ -83,7 +83,7 @@ void	*routine(void *v_queue)
 			if (!p_sleep(queue, philo))
 				break ;
 		}
-		t_printf(philo, "dead debug");
+		// t_printf(philo, "dead debug");
 	}
 	return (NULL);
 }

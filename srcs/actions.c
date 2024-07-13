@@ -6,13 +6,15 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 22:08:30 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/11 02:54:19 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/12 22:16:36 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
 #include <pthread.h>
+#include <unistd.h>
 
+/*
 int	thread_sleep(int time)
 {
 	int	i;
@@ -25,6 +27,20 @@ int	thread_sleep(int time)
 		if (usleep(sleep_interval) != 0)
 			return (0);
 		i++;
+	}
+	return (1);
+}
+*/
+
+int	thread_sleep(int time, t_philo *philo)
+{
+	unsigned long long int	start_time;
+
+	start_time = get_time(philo);
+	while (get_time(philo) - start_time < (unsigned long long)time)
+	{
+		if (usleep(10) != 0)
+			return (0);
 	}
 	return (1);
 }
@@ -112,10 +128,10 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	pthread_mutex_lock(first_fork->fork_mutex);
 	pthread_mutex_lock(second_fork->fork_mutex);
 	change_status(philo, 1);
-	t_printf(philo, "is taking a fork");
+	t_printf(philo, "has taken a fork");
 	t_printf(philo, "is eating");
 	change_starting_time(philo);
-	thread_sleep(queue->args->time_to_eat);
+	thread_sleep(queue->args->time_to_eat, philo);
 	change_last_eating(philo);
 	if (!check_eat_time(philo, queue))
 	{
@@ -135,7 +151,7 @@ int	p_sleep(t_philo_queue *queue, t_philo *philo)
 	change_starting_time(philo);
 	change_status(philo, 2);
 	t_printf(philo, "is sleeping");
-	thread_sleep(queue->args->time_to_sleep);
+	thread_sleep(queue->args->time_to_sleep, philo);
 	return (1);
 }
 
