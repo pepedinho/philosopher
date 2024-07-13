@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 20:05:23 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/11 01:09:15 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/13 04:45:41 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ void	*routine(void *v_queue)
 		{
 			if (!think(queue, philo))
 				break ;
-			if (!check_time(philo, queue))
-				break ;
 			if (!eat(queue, philo))
 				break ;
 			if (!p_sleep(queue, philo))
+				break ;
+			if (!check_time(philo, queue))
 				break ;
 			i++;
 		}
@@ -76,11 +76,11 @@ void	*routine(void *v_queue)
 		{
 			if (!think(queue, philo))
 				break ;
-			if (!check_time(philo, queue))
-				break ;
 			if (!eat(queue, philo))
 				break ;
 			if (!p_sleep(queue, philo))
+				break ;
+			if (!check_time(philo, queue))
 				break ;
 		}
 		// t_printf(philo, "dead debug");

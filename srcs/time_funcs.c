@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 21:07:54 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/11 01:06:47 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/13 04:47:40 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,29 +41,30 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 
 	//	pthread_mutex_lock(queue->mutex_g);
 	pthread_mutex_lock(philo->time_mutex);
-	if (philo->status == 2)
-	{
-		if (get_time(philo)
-			- philo->starting_time > (unsigned long long int)queue->args->time_to_sleep
-			* 1000)
-		{
-			philo->status = 4;
-			t_printf(philo, "is dead");
-			return (pthread_mutex_unlock(philo->time_mutex), 0);
-		}
-	}
-	else if (philo->status == 1)
-	{
-		if (get_time(philo)
-			- philo->starting_time > (unsigned long long int)queue->args->time_to_eat
-			* 1000)
-		{
-			philo->status = 4;
-			t_printf(philo, "is dead");
-			return (pthread_mutex_unlock(philo->time_mutex), 0);
-		}
-	}
+	// if (philo->status == 2)
+	// {
+	// 	if (get_time(philo)
+	// 		- philo->starting_time > (unsigned long long int)queue->args->time_to_sleep
+	// 		* 1000)
+	// 	{
+	// 		philo->status = 4;
+	// 		t_printf(philo, "is dead");
+	// 		return (pthread_mutex_unlock(philo->time_mutex), 0);
+	// 	}
+	// }
+	// else if (philo->status == 1)
+	// {
+	// 	if (get_time(philo)
+	// 		- philo->starting_time > (unsigned long long int)queue->args->time_to_eat
+	// 		* 1000)
+	// 	{
+	// 		philo->status = 4;
+	// 		t_printf(philo, "is dead");
+	// 		return (pthread_mutex_unlock(philo->time_mutex), 0);
+	// 	}
+	// }
 	time = get_time(philo);
+	dprintf(2, "TESTa : %lld\n", time - philo->last_eating);
 	if (time - philo->last_eating > (unsigned long long)queue->args->time_to_die
 		&& philo->last_eating)
 	{

@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 22:08:30 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/12 22:16:36 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/13 04:51:52 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,13 @@ void	change_last_eating(t_philo *philo)
 
 int	check_eat_time(t_philo *philo, t_philo_queue *queue)
 {
+	unsigned long long int	time;
+
 	pthread_mutex_lock(philo->time_mutex);
-	if (philo->last_eating
-		- philo->starting_time > (long long unsigned)queue->args->time_to_eat)
+	time = get_time(philo);
+
+	if (- philo->last_eating
+		+ time > (long long unsigned)queue->args->time_to_eat)
 	{
 		printf("-------------------------------------------------------------\n");
 		printf("starting time : %lld ending_time : %lld\n",
@@ -130,9 +134,8 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	change_status(philo, 1);
 	t_printf(philo, "has taken a fork");
 	t_printf(philo, "is eating");
-	change_starting_time(philo);
-	thread_sleep(queue->args->time_to_eat, philo);
 	change_last_eating(philo);
+	thread_sleep(queue->args->time_to_eat, philo);
 	if (!check_eat_time(philo, queue))
 	{
 		pthread_mutex_unlock(first_fork->fork_mutex);
@@ -148,7 +151,6 @@ int	p_sleep(t_philo_queue *queue, t_philo *philo)
 {
 	if (get_status(philo) == 4)
 		return (0);
-	change_starting_time(philo);
 	change_status(philo, 2);
 	t_printf(philo, "is sleeping");
 	thread_sleep(queue->args->time_to_sleep, philo);
