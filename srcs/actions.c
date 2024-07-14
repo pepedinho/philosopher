@@ -12,6 +12,7 @@
 
 #include "../includes/philosopher.h"
 #include <pthread.h>
+#include <stdio.h>
 #include <unistd.h>
 
 /*
@@ -45,6 +46,44 @@ int	thread_sleep(int time, t_philo *philo)
 	return (1);
 }
 
+void	take_fork(t_philo_queue *queue, t_philo *philo)
+{
+	t_philo	*first_fork;
+	t_philo	*second_fork;
+
+	if (philo->id == queue->args->nb_of_philo)
+	{
+		first_fork = queue->first;
+		second_fork = philo;
+	}
+	else
+	{
+		first_fork = philo;
+		second_fork = philo->next;
+	}
+	pthread_mutex_lock(first_fork->fork_mutex);
+	pthread_mutex_lock(second_fork->fork_mutex);
+}
+
+void	drop_fork(t_philo_queue *queue, t_philo *philo)
+{
+	t_philo	*first_fork;
+	t_philo	*second_fork;
+
+	if (philo->id == queue->args->nb_of_philo)
+	{
+		first_fork = queue->first;
+		second_fork = philo;
+	}
+	else
+	{
+		first_fork = philo;
+		second_fork = philo->next;
+	}
+	pthread_mutex_unlock(first_fork->fork_mutex);
+	pthread_mutex_unlock(second_fork->fork_mutex);
+}
+
 int	get_status(t_philo *philo)
 {
 	int	status;
@@ -52,8 +91,6 @@ int	get_status(t_philo *philo)
 	pthread_mutex_lock(philo->status_mutex);
 	status = philo->status;
 	pthread_mutex_unlock(philo->status_mutex);
-	if (status == 4)
-		t_printf(philo, "is dead");
 	return (status);
 }
 
@@ -94,19 +131,19 @@ int	check_eat_time(t_philo *philo, t_philo_queue *queue)
 
 	pthread_mutex_lock(philo->time_mutex);
 	time = get_time(philo);
-
-	if (- philo->last_eating
-		+ time > (long long unsigned)queue->args->time_to_eat)
+	if (time
+		- philo->last_eating > (long long unsigned)queue->args->time_to_eat)
 	{
 		printf("-------------------------------------------------------------\n");
-		printf("starting time : %lld ending_time : %lld\n",
-			philo->starting_time, philo->last_eating);
-		printf("\tending_time - starting_time = %lld\n", philo->last_eating
+		printf("philo[%d] starting time : %lld ending_time : %lld\n", philo->id,
+			philo->starting_time, time);
+		printf("\tending_time - starting_time = %lld\n", time
 			- philo->starting_time);
 		printf("\t\ttime to eat : %d\n", queue->args->time_to_eat);
 		printf("-------------------------------------------------------------\n");
 		pthread_mutex_unlock(philo->time_mutex);
-		return (change_status(philo, 4), 0);
+		change_status(philo, 4);
+		return (0);
 	}
 	pthread_mutex_unlock(philo->time_mutex);
 	return (1);
@@ -114,23 +151,15 @@ int	check_eat_time(t_philo *philo, t_philo_queue *queue)
 
 int	eat(t_philo_queue *queue, t_philo *philo)
 {
-	t_philo	*first_fork;
-	t_philo	*second_fork;
-
 	if (get_status(philo) == 4)
 		return (0);
-	if (philo->id == queue->args->nb_of_philo)
+	take_fork(queue, philo);
+	if (!check_time(philo, queue))
 	{
-		first_fork = queue->first;
-		second_fork = philo;
+		return (drop_fork(queue, philo), 0);
+		printf("---------------debug philo [%d]--------------------\n",
+			philo->id);
 	}
-	else
-	{
-		first_fork = philo;
-		second_fork = philo->next;
-	}
-	pthread_mutex_lock(first_fork->fork_mutex);
-	pthread_mutex_lock(second_fork->fork_mutex);
 	change_status(philo, 1);
 	t_printf(philo, "has taken a fork");
 	t_printf(philo, "is eating");
@@ -138,12 +167,10 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	thread_sleep(queue->args->time_to_eat, philo);
 	if (!check_eat_time(philo, queue))
 	{
-		pthread_mutex_unlock(first_fork->fork_mutex);
-		pthread_mutex_unlock(second_fork->fork_mutex);
+		drop_fork(queue, philo);
 		return (0);
 	}
-	pthread_mutex_unlock(first_fork->fork_mutex);
-	pthread_mutex_unlock(second_fork->fork_mutex);
+	drop_fork(queue, philo);
 	return (1);
 }
 
@@ -159,27 +186,11 @@ int	p_sleep(t_philo_queue *queue, t_philo *philo)
 
 int	think(t_philo_queue *queue, t_philo *philo)
 {
-	t_philo	*first_fork;
-	t_philo	*second_fork;
-
 	if (get_status(philo) == 4)
 		return (0);
-	if (philo->id == queue->args->nb_of_philo)
-	{
-		first_fork = queue->first;
-		second_fork = philo;
-	}
-	else
-	{
-		first_fork = philo;
-		second_fork = philo->next;
-	}
+	(void)queue;
 	change_starting_time(philo);
 	change_status(philo, 3);
 	t_printf(philo, "is thinking");
-	pthread_mutex_lock(first_fork->fork_mutex);
-	pthread_mutex_lock(second_fork->fork_mutex);
-	pthread_mutex_unlock(first_fork->fork_mutex);
-	pthread_mutex_unlock(second_fork->fork_mutex);
 	return (1);
 }

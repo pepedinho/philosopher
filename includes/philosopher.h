@@ -52,6 +52,7 @@ typedef struct s_philo_queue
 	t_args					*args;
 	pthread_mutex_t			*mutex_g;
 	t_philo					*first;
+	int						stop_monitoring;
 }							t_philo_queue;
 
 // args parsing
@@ -79,5 +80,6 @@ int							think(t_philo_queue *queue, t_philo *philo);
 int							p_sleep(t_philo_queue *queue, t_philo *philo);
 int							get_id(t_philo *philo);
 void						change_status(t_philo *philo, int new_status);
+int							get_status(t_philo *philo);
 
 #endif

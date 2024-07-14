@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
-#include <pthread.h>
 
 t_philo_queue	*init_queue(t_args *args)
 {
@@ -22,6 +21,7 @@ t_philo_queue	*init_queue(t_args *args)
 		return (NULL);
 	queue->args = args;
 	queue->mutex_g = malloc(sizeof(pthread_mutex_t));
+	queue->stop_monitoring = 0;
 	pthread_mutex_init(queue->mutex_g, NULL);
 	queue->first = NULL;
 	return (queue);

@@ -85,5 +85,11 @@ void	*routine(void *v_queue)
 		}
 		// t_printf(philo, "dead debug");
 	}
+	if (max_ite)
+	{
+		pthread_mutex_lock(queue->mutex_g);
+		queue->stop_monitoring = 1;
+		pthread_mutex_unlock(queue->mutex_g);
+	}
 	return (NULL);
 }
