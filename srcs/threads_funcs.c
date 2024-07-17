@@ -58,6 +58,12 @@ void	thread_generation(t_philo_queue *queue)
 	t_philo	*philo;
 
 	philo = queue->first;
+	if (queue->args->nb_of_philo == 1)
+	{
+		printf("%lld %d is thinking\n", get_time(philo), philo->id);
+		printf("%lld %d is died\n", get_time(philo), philo->id);
+		return ;
+	}
 	pthread_mutex_lock(philo->print_mutex);
 	while (philo)
 	{
@@ -66,22 +72,6 @@ void	thread_generation(t_philo_queue *queue)
 	}
 	pthread_mutex_unlock(queue->first->print_mutex);
 	philo = queue->first;
-	/*while (philo)
-	{
-		if (philo->status == 4)
-		{
-			pthread_mutex_lock(philo->print_mutex);
-			printf("dead\n");
-			philo = queue->first;
-			while (philo)
-			{
-				change_status(philo, 4);
-				philo = philo->next;
-			}
-			pthread_mutex_unlock(philo->print_mutex);
-		}
-		philo = philo->next;
-	}*/
 	monitoring(queue);
 	while (philo)
 	{

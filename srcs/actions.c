@@ -134,13 +134,16 @@ int	check_eat_time(t_philo *philo, t_philo_queue *queue)
 	if (time
 		- philo->last_eating > (long long unsigned)queue->args->time_to_eat)
 	{
-		printf("-------------------------------------------------------------\n");
-		printf("philo[%d] starting time : %lld ending_time : %lld\n", philo->id,
-			philo->starting_time, time);
-		printf("\tending_time - starting_time = %lld\n", time
-			- philo->starting_time);
-		printf("\t\ttime to eat : %d\n", queue->args->time_to_eat);
-		printf("-------------------------------------------------------------\n");
+		/*
+			printf("-------------------------------------------------------------\n");
+			printf("philo[%d] starting time : %lld ending_time : %lld\n",
+				philo->id,
+				philo->starting_time, time);
+			printf("\tending_time - starting_time = %lld\n", time
+				- philo->starting_time);
+			printf("\t\ttime to eat : %d\n", queue->args->time_to_eat);
+			printf("-------------------------------------------------------------\n");
+		*/
 		pthread_mutex_unlock(philo->time_mutex);
 		change_status(philo, 4);
 		return (0);
