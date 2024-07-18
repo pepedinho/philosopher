@@ -38,6 +38,8 @@ typedef struct s_philo
 	pthread_mutex_t			*id_mutex;
 	pthread_mutex_t			*status_mutex;
 	pthread_mutex_t			*time_mutex;
+	int						is_limmited_by_it;
+	int						itteration;
 	int						id;
 	int						status;
 	int						last_action;

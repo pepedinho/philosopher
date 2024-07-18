@@ -55,9 +55,9 @@ void	*routine(void *v_queue)
 	max_ite = queue->args->itteration;
 	pthread_mutex_unlock(queue->mutex_g);
 	i = 0;
-	if (max_ite)
+	if (philo->is_limmited_by_it)
 	{
-		while (i < max_ite)
+		while (philo->itteration)
 		{
 			if (!think(queue, philo))
 				break ;

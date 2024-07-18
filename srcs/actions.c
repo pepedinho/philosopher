@@ -174,6 +174,8 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 		return (0);
 	}
 	drop_fork(queue, philo);
+	if (philo->is_limmited_by_it)
+		philo->itteration--;
 	return (1);
 }
 

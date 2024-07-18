@@ -80,6 +80,10 @@ int	add_in_queue(t_philo_queue *queue)
 	new->starting_time = 0;
 	new->last_action = 0;
 	new->last_eating = 0;
+	new->is_limmited_by_it = 0;
+	new->itteration = queue->args->itteration;
+	if (new->itteration)
+		new->is_limmited_by_it = 1;
 	new->thread = malloc(sizeof(pthread_t));
 	if (!new->thread)
 		free_queue(queue);
