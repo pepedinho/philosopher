@@ -13,6 +13,8 @@
 #include "../includes/philosopher.h"
 #include <pthread.h>
 #include <stdio.h>
+#include <threads.h>
+#include <unistd.h>
 
 void	kill_all_philo(t_philo_queue *queue)
 {
@@ -25,6 +27,15 @@ void	kill_all_philo(t_philo_queue *queue)
 		philo = philo->next;
 	}
 	pthread_mutex_unlock(queue->first->print_mutex);
+}
+
+int	has_to_stop(t_philo_queue *queue)
+{
+	pthread_mutex_lock(queue->mutex_g);
+	if (queue->stop_monitoring)
+		return (pthread_mutex_unlock(queue->mutex_g), 1);
+	pthread_mutex_unlock(queue->mutex_g);
+	return (0);
 }
 
 int	monitoring(t_philo_queue *queue)
@@ -45,9 +56,10 @@ int	monitoring(t_philo_queue *queue)
 				kill_all_philo(queue);
 				return (1);
 			}
-			else if (max_ite && queue->stop_monitoring)
+			else if (max_ite && has_to_stop(queue))
 				return (1);
 			philo = philo->next;
+			usleep(5);
 		}
 	}
 	return (0);

@@ -83,5 +83,6 @@ int							p_sleep(t_philo_queue *queue, t_philo *philo);
 int							get_id(t_philo *philo);
 void						change_status(t_philo *philo, int new_status);
 int							get_status(t_philo *philo);
+int							thread_sleep(int time, t_philo *philo);
 
 #endif
