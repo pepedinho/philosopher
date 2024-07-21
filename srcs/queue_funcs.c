@@ -35,7 +35,6 @@ void	init_mutex(t_philo *new, t_philo_queue *queue)
 	i++;
 	if (i == 1)
 	{
-		printf("new print mutex\n");
 		p_mutex = malloc(sizeof(pthread_mutex_t));
 		pthread_mutex_init(p_mutex, NULL);
 		if (!p_mutex)

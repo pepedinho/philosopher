@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 
-CC = gcc
+CC = cc
 
 SRCS = $(addprefix srcs/,  main.c args_parsing.c queue_funcs.c routine.c threads_funcs.c time_funcs.c actions.c)
 
@@ -21,7 +21,7 @@ OBJS = $(SRCS:.c=.o)
 
 CFLAGS = -Wall -Wextra -Werror -g3
 
-NAME = philosopher
+NAME = philo
 
 all : $(NAME)
 
