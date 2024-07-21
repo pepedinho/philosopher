@@ -12,6 +12,7 @@
 
 #include "../includes/philosopher.h"
 #include <pthread.h>
+#include <unistd.h>
 
 t_philo	*get_by_id(t_philo_queue *queue, int *id)
 {
@@ -51,6 +52,8 @@ void	*routine(void *v_queue)
 	max_ite = 0;
 	pthread_mutex_lock(philo->print_mutex);
 	pthread_mutex_unlock(philo->print_mutex);
+	if (philo->id % 2 == 0)
+		usleep(100);
 	pthread_mutex_lock(queue->mutex_g);
 	max_ite = queue->args->itteration;
 	pthread_mutex_unlock(queue->mutex_g);

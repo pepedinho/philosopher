@@ -37,8 +37,6 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 
 	pthread_mutex_lock(philo->time_mutex);
 	time = get_time(philo);
-	// if (philo->last_eating)
-	//	dprintf(2, "TESTa : %lld\n", time - philo->last_eating);
 	if (philo->last_eating != 0 && time
 		- philo->last_eating > (unsigned long long)queue->args->time_to_die)
 	{

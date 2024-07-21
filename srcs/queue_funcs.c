@@ -90,15 +90,18 @@ int	add_in_queue(t_philo_queue *queue)
 	if (!queue)
 		return (0);
 	new->next = NULL;
+	new->before = NULL;
 	if (queue->first)
 	{
 		current = queue->first;
 		while (current->next)
 			current = current->next;
 		current->next = new;
+		new->before = current;
 	}
 	else
 		queue->first = new;
+	queue->last = new;
 	return (1);
 }
 

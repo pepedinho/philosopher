@@ -13,7 +13,7 @@
 
 CC = cc
 
-SRCS = $(addprefix srcs/,  main.c args_parsing.c queue_funcs.c routine.c threads_funcs.c time_funcs.c actions.c)
+SRCS = $(addprefix srcs/,  main.c args_parsing.c queue_funcs.c routine.c threads_funcs.c time_funcs.c actions.c utils.c)
 
 INCLUDES = ./includes -I ./libft/includes/
 
