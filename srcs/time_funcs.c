@@ -69,7 +69,7 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 	if (philo->last_eating != 0 && time
 		- philo->last_eating > (unsigned long long)queue->args->time_to_die)
 	{
-		philo->status = 4;
+		change_status(philo, 4);
 		return (pthread_mutex_unlock(philo->time_mutex), 0);
 	}
 	// pthread_mutex_unlock(queue->mutex_g);
