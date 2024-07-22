@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 21:29:13 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/05 22:03:36 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/22 04:27:34 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	monitoring(t_philo_queue *queue)
 {
 	t_philo	*philo;
 	int		max_ite;
+	unsigned long long int time;
 
 	max_ite = queue->args->itteration;
 	while (1)
@@ -49,10 +50,19 @@ int	monitoring(t_philo_queue *queue)
 		philo = queue->first;
 		while (philo)
 		{
+			
+			if (!check_time(philo, queue))
+			{
+				time = get_time(philo);
+				pthread_mutex_lock(philo->print_mutex);
+				printf("%lld %d died\n", time, philo->id);
+				return (kill_all_philo(queue), 1);
+			}
 			if (get_status(philo) == 4)
 			{
+				time = get_time(philo);
 				pthread_mutex_lock(philo->print_mutex);
-				printf("%lld %d died\n", get_time(philo), philo->id);
+				printf("%lld %d died\n", time, philo->id);
 				kill_all_philo(queue);
 				return (1);
 			}

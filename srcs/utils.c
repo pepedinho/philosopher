@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 21:27:29 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/21 21:28:53 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/22 04:15:49 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,31 @@ void	take_fork(t_philo_queue *queue, t_philo *philo)
 	t_philo	*first_fork;
 	t_philo	*second_fork;
 
-	if (philo->id == queue->args->nb_of_philo)
+	if (philo->id % 2 == 0)
 	{
-		first_fork = philo;
-		second_fork = queue->first;
+		if (philo->id == queue->args->nb_of_philo)
+		{
+			first_fork = philo;
+			second_fork = queue->first;
+		}
+		else
+		{
+			first_fork = philo;
+			second_fork = philo->next;
+		}
 	}
 	else
 	{
-		first_fork = philo;
-		second_fork = philo->next;
+		if (philo->id == queue->args->nb_of_philo)
+		{
+			first_fork = queue->first;
+			second_fork = philo;
+		}
+		else
+		{
+			first_fork = philo->next;
+			second_fork = philo;
+		}
 	}
 	pthread_mutex_lock(first_fork->fork_mutex);
 	pthread_mutex_lock(second_fork->fork_mutex);
@@ -49,18 +65,34 @@ void	drop_fork(t_philo_queue *queue, t_philo *philo)
 	t_philo	*first_fork;
 	t_philo	*second_fork;
 
-	if (philo->id == queue->args->nb_of_philo)
+	if (philo->id % 2 == 0)
 	{
-		first_fork = queue->first;
-		second_fork = philo;
+		if (philo->id == queue->args->nb_of_philo)
+		{
+			first_fork = philo;
+			second_fork = queue->first;
+		}
+		else
+		{
+			first_fork = philo;
+			second_fork = philo->next;
+		}
 	}
 	else
 	{
-		first_fork = philo;
-		second_fork = philo->next;
+		if (philo->id == queue->args->nb_of_philo)
+		{
+			first_fork = queue->first;
+			second_fork = philo;
+		}
+		else
+		{
+			first_fork = philo->next;
+			second_fork = philo;
+		}
 	}
-	pthread_mutex_unlock(first_fork->fork_mutex);
 	pthread_mutex_unlock(second_fork->fork_mutex);
+	pthread_mutex_unlock(first_fork->fork_mutex);
 }
 
 int	get_status(t_philo *philo)

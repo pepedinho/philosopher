@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 22:08:30 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/22 01:30:21 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/22 04:22:45 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,8 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	if (get_status(philo) == 4)
 		return (0);
 	take_fork(queue, philo);
-	if (!check_time(philo, queue))
-	{
+	if (get_status(philo) == 4)
 		return (drop_fork(queue, philo), 0);
-		printf("---------------debug philo [%d]--------------------\n",
-			philo->id);
-	}
 	change_status(philo, 1);
 	t_printf(philo, "has taken a fork");
 	t_printf(philo, "is eating");

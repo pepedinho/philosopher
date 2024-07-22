@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 18:29:30 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/22 01:29:15 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/22 04:10:46 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ typedef struct s_philo
 	unsigned long long int	starting_time;
 	unsigned long long int	last_eating;
 	struct s_philo			*next;
-	struct s_philo			*before;
 }							t_philo;
 
 typedef struct s_philo_queue
@@ -55,7 +54,6 @@ typedef struct s_philo_queue
 	t_args					*args;
 	pthread_mutex_t			*mutex_g;
 	t_philo					*first;
-	t_philo					*last;
 	int						stop_monitoring;
 }							t_philo_queue;
 

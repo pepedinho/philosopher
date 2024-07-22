@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 19:16:36 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/22 01:26:38 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/22 04:10:58 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,15 @@ int	add_in_queue(t_philo_queue *queue)
 	if (!queue)
 		return (0);
 	new->next = NULL;
-	new->before = NULL;
 	if (queue->first)
 	{
 		current = queue->first;
 		while (current->next)
 			current = current->next;
 		current->next = new;
-		new->before = current;
 	}
 	else
 		queue->first = new;
-	queue->last = new;
 	return (1);
 }
 
