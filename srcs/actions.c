@@ -6,16 +6,11 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 22:08:30 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/21 21:28:18 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/22 01:30:21 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
-#include <pthread.h>
-#include <stdio.h>
-#include <unistd.h>
-
-
 
 void	change_status(t_philo *philo, int new_status)
 {
@@ -79,26 +74,5 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	drop_fork(queue, philo);
 	if (philo->is_limmited_by_it)
 		philo->itteration--;
-	return (1);
-}
-
-int	p_sleep(t_philo_queue *queue, t_philo *philo)
-{
-	if (get_status(philo) == 4)
-		return (0);
-	change_status(philo, 2);
-	t_printf(philo, "is sleeping");
-	thread_sleep(queue->args->time_to_sleep, philo);
-	return (1);
-}
-
-int	think(t_philo_queue *queue, t_philo *philo)
-{
-	if (get_status(philo) == 4)
-		return (0);
-	(void)queue;
-	change_starting_time(philo);
-	change_status(philo, 3);
-	t_printf(philo, "is thinking");
 	return (1);
 }

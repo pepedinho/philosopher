@@ -6,7 +6,7 @@
 /*   By: itahri <itahri@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 18:29:30 by itahri            #+#    #+#             */
-/*   Updated: 2024/07/21 21:30:18 by itahri           ###   ########.fr       */
+/*   Updated: 2024/07/22 01:29:15 by itahri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,10 @@ int							ft_atoi(const char *nptr);
 // queue functions
 t_philo_queue				*create_philo_queue(t_args *args);
 void						free_queue(t_philo_queue *queue);
+t_philo_queue				*init_queue(t_args *args);
+void						init_re(t_philo *elem, t_philo_queue *queue);
+void						init_mutex(t_philo *elem, t_philo_queue *queue);
+void						all_to_zero(t_philo *elem, t_philo_queue *queue);
 
 // time functions
 unsigned long long int		get_time(t_philo *philo);
@@ -85,6 +89,7 @@ int							p_sleep(t_philo_queue *queue, t_philo *philo);
 int							get_id(t_philo *philo);
 void						change_status(t_philo *philo, int new_status);
 int							get_status(t_philo *philo);
+void						change_starting_time(t_philo *philo);
 
 // utils
 void						take_fork(t_philo_queue *queue, t_philo *philo);
