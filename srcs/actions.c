@@ -58,15 +58,14 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	if (get_status(philo) == 4)
 		return (drop_fork(queue, philo), 0);
 	change_status(philo, 1);
-	t_printf(philo, "has taken a fork");
 	t_printf(philo, "is eating");
 	change_last_eating(philo);
 	thread_sleep(queue->args->time_to_eat, philo);
-	if (!check_eat_time(philo, queue))
+	/*if (!check_eat_time(philo, queue))
 	{
 		drop_fork(queue, philo);
 		return (0);
-	}
+	}*/
 	drop_fork(queue, philo);
 	if (philo->is_limmited_by_it)
 		philo->itteration--;

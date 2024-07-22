@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
+#include <bits/types/struct_timeval.h>
+#include <pthread.h>
 
 /*
   status :
@@ -23,11 +25,11 @@
 unsigned long long int	get_time(t_philo *philo)
 {
 	unsigned long long int	time;
+	struct timeval			actual;
 
-	if (gettimeofday(&philo->geting_time, NULL) == -1)
+	if (gettimeofday(&actual, NULL) == -1)
 		return (pthread_mutex_unlock(philo->time_mutex), 0);
-	time = (philo->geting_time.tv_sec * 1000) + (philo->geting_time.tv_usec
-			/ 1000);
+	time = (actual.tv_sec * 1000) + (actual.tv_usec / 1000);
 	return (time);
 }
 
@@ -37,9 +39,20 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 
 	pthread_mutex_lock(philo->time_mutex);
 	time = get_time(philo);
+	// if (philo->last_eating)
+	//	dprintf(2, "TESTa : %lld\n", time - philo->last_eating);
 	if (philo->last_eating != 0 && time
 		- philo->last_eating > (unsigned long long)queue->args->time_to_die)
 	{
+		/*
+			printf("-------------------------------------------------------------\n");
+			printf("philo[%d] starting time : %lld actual time : %lld\n",
+				philo->id,
+				philo->last_eating, time);
+			printf("\tactual_time - starting_time = %lld\n", time
+				- philo->last_eating);
+			printf("\t\ttime to die : %d\n", queue->args->time_to_die);
+			printf("-------------------------------------------------------------\n");*/
 		change_status(philo, 4);
 		return (pthread_mutex_unlock(philo->time_mutex), 0);
 	}

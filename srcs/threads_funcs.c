@@ -18,9 +18,13 @@
 
 void	kill_all_philo(t_philo_queue *queue)
 {
-	t_philo	*philo;
+	t_philo					*philo;
+	unsigned long long int	time;
 
 	philo = queue->first;
+	pthread_mutex_lock(philo->print_mutex);
+	time = get_time(philo);
+	printf("%lld %d died\n", time, philo->id);
 	while (philo)
 	{
 		change_status(philo, 4);
@@ -42,7 +46,6 @@ int	monitoring(t_philo_queue *queue)
 {
 	t_philo	*philo;
 	int		max_ite;
-	unsigned long long int time;
 
 	max_ite = queue->args->itteration;
 	while (1)
@@ -50,22 +53,10 @@ int	monitoring(t_philo_queue *queue)
 		philo = queue->first;
 		while (philo)
 		{
-			
 			if (!check_time(philo, queue))
-			{
-				time = get_time(philo);
-				pthread_mutex_lock(philo->print_mutex);
-				printf("%lld %d died\n", time, philo->id);
 				return (kill_all_philo(queue), 1);
-			}
 			if (get_status(philo) == 4)
-			{
-				time = get_time(philo);
-				pthread_mutex_lock(philo->print_mutex);
-				printf("%lld %d died\n", time, philo->id);
-				kill_all_philo(queue);
-				return (1);
-			}
+				return (kill_all_philo(queue), 1);
 			else if (max_ite && has_to_stop(queue))
 				return (1);
 			philo = philo->next;

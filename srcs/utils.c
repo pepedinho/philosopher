@@ -25,12 +25,33 @@ int	thread_sleep(int time, t_philo *philo)
 	return (1);
 }
 
+void	fork_assign(t_philo_queue *queue, t_philo *philo, t_philo *f_fork,
+		t_philo *s_fork)
+{
+	if (philo->id % 2 == 0)
+	{
+		f_fork = philo;
+		if (philo->id == queue->args->nb_of_philo)
+			s_fork = queue->first;
+		else
+			s_fork = philo->next;
+	}
+	else
+	{
+		s_fork = philo;
+		if (philo->id == queue->args->nb_of_philo)
+			f_fork = queue->first;
+		else
+			f_fork = philo->next;
+	}
+}
+
 void	take_fork(t_philo_queue *queue, t_philo *philo)
 {
 	t_philo	*first_fork;
 	t_philo	*second_fork;
 
-	if (philo->id % 2 == 0)
+	if (queue->args->nb_of_philo % 2 == 0)
 	{
 		if (philo->id == queue->args->nb_of_philo)
 		{
@@ -57,7 +78,9 @@ void	take_fork(t_philo_queue *queue, t_philo *philo)
 		}
 	}
 	pthread_mutex_lock(first_fork->fork_mutex);
+	t_printf(philo, "has taken a fork");
 	pthread_mutex_lock(second_fork->fork_mutex);
+	t_printf(philo, "has taken a fork");
 }
 
 void	drop_fork(t_philo_queue *queue, t_philo *philo)
@@ -65,7 +88,7 @@ void	drop_fork(t_philo_queue *queue, t_philo *philo)
 	t_philo	*first_fork;
 	t_philo	*second_fork;
 
-	if (philo->id % 2 == 0)
+	if (queue->args->nb_of_philo % 2 == 0)
 	{
 		if (philo->id == queue->args->nb_of_philo)
 		{
