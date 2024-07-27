@@ -12,19 +12,6 @@
 
 #include "../includes/philosopher.h"
 
-int	thread_sleep(int time, t_philo *philo)
-{
-	unsigned long long int	start_time;
-
-	start_time = get_time(philo);
-	while (get_time(philo) - start_time < (unsigned long long)time)
-	{
-		if (usleep(10) != 0)
-			return (0);
-	}
-	return (1);
-}
-
 void	fork_assign(t_philo_queue *queue, t_philo *philo, t_philo *f_fork,
 		t_philo *s_fork)
 {
@@ -53,29 +40,19 @@ void	take_fork(t_philo_queue *queue, t_philo *philo)
 
 	if (queue->args->nb_of_philo % 2 == 0)
 	{
+		first_fork = philo;
 		if (philo->id == queue->args->nb_of_philo)
-		{
-			first_fork = philo;
 			second_fork = queue->first;
-		}
 		else
-		{
-			first_fork = philo;
 			second_fork = philo->next;
-		}
 	}
 	else
 	{
+		second_fork = philo;
 		if (philo->id == queue->args->nb_of_philo)
-		{
 			first_fork = queue->first;
-			second_fork = philo;
-		}
 		else
-		{
 			first_fork = philo->next;
-			second_fork = philo;
-		}
 	}
 	pthread_mutex_lock(first_fork->fork_mutex);
 	t_printf(philo, "has taken a fork");
@@ -90,29 +67,19 @@ void	drop_fork(t_philo_queue *queue, t_philo *philo)
 
 	if (queue->args->nb_of_philo % 2 == 0)
 	{
+		first_fork = philo;
 		if (philo->id == queue->args->nb_of_philo)
-		{
-			first_fork = philo;
 			second_fork = queue->first;
-		}
 		else
-		{
-			first_fork = philo;
 			second_fork = philo->next;
-		}
 	}
 	else
 	{
+		second_fork = philo;
 		if (philo->id == queue->args->nb_of_philo)
-		{
 			first_fork = queue->first;
-			second_fork = philo;
-		}
 		else
-		{
 			first_fork = philo->next;
-			second_fork = philo;
-		}
 	}
 	pthread_mutex_unlock(second_fork->fork_mutex);
 	pthread_mutex_unlock(first_fork->fork_mutex);

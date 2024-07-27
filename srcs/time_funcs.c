@@ -39,20 +39,9 @@ int	check_time(t_philo *philo, t_philo_queue *queue)
 
 	pthread_mutex_lock(philo->time_mutex);
 	time = get_time(philo);
-	// if (philo->last_eating)
-	//	dprintf(2, "TESTa : %lld\n", time - philo->last_eating);
 	if (philo->last_eating != 0 && time
-		- philo->last_eating > (unsigned long long)queue->args->time_to_die)
+		- philo->last_eating >= (unsigned long long)queue->args->time_to_die)
 	{
-		/*
-			printf("-------------------------------------------------------------\n");
-			printf("philo[%d] starting time : %lld actual time : %lld\n",
-				philo->id,
-				philo->last_eating, time);
-			printf("\tactual_time - starting_time = %lld\n", time
-				- philo->last_eating);
-			printf("\t\ttime to die : %d\n", queue->args->time_to_die);
-			printf("-------------------------------------------------------------\n");*/
 		change_status(philo, 4);
 		return (pthread_mutex_unlock(philo->time_mutex), 0);
 	}

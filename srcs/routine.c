@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philosopher.h"
-#include <pthread.h>
-#include <unistd.h>
 
 t_philo	*get_by_id(t_philo_queue *queue, int *id)
 {
@@ -49,8 +47,6 @@ void	ite_loop(t_philo_queue *queue, t_philo *philo)
 			break ;
 		if (!p_sleep(queue, philo))
 			break ;
-		// if (!check_time(philo, queue))
-		//	break ;
 	}
 }
 
@@ -64,8 +60,6 @@ void	classic_loop(t_philo_queue *queue, t_philo *philo)
 			break ;
 		if (!p_sleep(queue, philo))
 			break ;
-		/*if (!check_time(philo, queue))
-			break ;*/
 	}
 }
 

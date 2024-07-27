@@ -61,11 +61,6 @@ int	eat(t_philo_queue *queue, t_philo *philo)
 	t_printf(philo, "is eating");
 	change_last_eating(philo);
 	thread_sleep(queue->args->time_to_eat, philo);
-	/*if (!check_eat_time(philo, queue))
-	{
-		drop_fork(queue, philo);
-		return (0);
-	}*/
 	drop_fork(queue, philo);
 	if (philo->is_limmited_by_it)
 		philo->itteration--;

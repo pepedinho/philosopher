@@ -74,6 +74,8 @@ void	thread_generation(t_philo_queue *queue)
 	if (queue->args->nb_of_philo == 1)
 	{
 		printf("%lld %d is thinking\n", get_time(philo), philo->id);
+		printf("%lld %d has taken a fork\n", get_time(philo), philo->id);
+		thread_sleep(queue->args->time_to_die, philo);
 		printf("%lld %d is died\n", get_time(philo), philo->id);
 		return ;
 	}
@@ -91,4 +93,17 @@ void	thread_generation(t_philo_queue *queue)
 		pthread_join(*philo->thread, NULL);
 		philo = philo->next;
 	}
+}
+
+int	thread_sleep(int time, t_philo *philo)
+{
+	unsigned long long int	start_time;
+
+	start_time = get_time(philo);
+	while (get_time(philo) - start_time < (unsigned long long)time)
+	{
+		if (usleep(10) != 0)
+			return (0);
+	}
+	return (1);
 }
